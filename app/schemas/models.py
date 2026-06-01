@@ -82,3 +82,4 @@ class MonitorResponse(BaseModel):
     explained_variance: Optional[float]
     training_anomaly_rate: Optional[float]
     feature_stats: Optional[dict]
+    mlflow_runs: Optional[list[dict]] = None

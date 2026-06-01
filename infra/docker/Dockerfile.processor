@@ -1,0 +1,24 @@
+FROM bitnami/spark:3.5
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends python3-pip && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements/processor.txt requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+COPY requirements/api.txt requirements-api.txt
+RUN pip3 install --no-cache-dir -r requirements-api.txt
+
+COPY app/       ./app/
+COPY services/  ./services/
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYSPARK_PYTHON=python3
+
+CMD ["python3", "-m", "services.processor.spark_processor", "--location", "London"]

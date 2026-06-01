@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weather-config
+  namespace: weather-anomaly
+data:
+  KAFKA_BOOTSTRAP_SERVERS:  "kafka:9092"
+  KAFKA_TOPIC_RAW:          "raw-weather"
+  KAFKA_TOPIC_PROCESSED:    "processed-weather"
+  KAFKA_CONSUMER_GROUP:     "weather-consumer"
+  MLFLOW_TRACKING_URI:      "http://mlflow:5000"
+  MLFLOW_EXPERIMENT:        "weather-anomaly-detection"
+  SPARK_MASTER:             "spark://spark-master:7077"
+  PG_JDBC_URL:              "jdbc:postgresql://postgres:5432/weather_anomaly"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: weather-secrets
+  namespace: weather-anomaly
+type: Opaque
+stringData:
+  POSTGRES_USER:     "weather"
+  POSTGRES_PASSWORD: "weather123"
+  POSTGRES_DB:       "weather_anomaly"
+  DATABASE_URL:      "postgresql://weather:weather123@postgres:5432/weather_anomaly"

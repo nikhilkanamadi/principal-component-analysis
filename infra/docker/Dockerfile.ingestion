@@ -1,0 +1,19 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+COPY requirements/ingestion.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY requirements/api.txt requirements-api.txt
+RUN pip install --no-cache-dir -r requirements-api.txt
+
+COPY app/       ./app/
+COPY services/  ./services/
+
+ENV PYTHUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+CMD ["python", "-m", "services.ingestion.consumer"]
