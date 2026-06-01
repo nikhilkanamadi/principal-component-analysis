@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.joblib
+data/weather.db
+.DS_Store
+*.egg-info/
+dist/
+build/
+.env
