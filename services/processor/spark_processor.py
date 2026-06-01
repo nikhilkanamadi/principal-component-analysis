@@ -92,9 +92,10 @@ def process_with_spark(location: str) -> int:
         .withColumn("month",          F.month("date").cast(DoubleType()))
     )
 
-    # Rolling 7-day window
+    # Rolling 7-day window (unix_date gives integer days since epoch — safe for ordering in Spark 3.5+)
+    df = df.withColumn("_date_int", F.unix_date("date"))
     w7 = (Window.partitionBy("location")
-              .orderBy(F.col("date").cast("long"))
+              .orderBy("_date_int")
               .rowsBetween(-6, 0))
 
     for col in ["temperature_2m_mean", "precipitation_sum", "wind_speed_10m_max"]:
@@ -110,6 +111,7 @@ def process_with_spark(location: str) -> int:
         .withColumn("precip_deviation",
                     F.col("precipitation_sum") - F.col("precipitation_sum_roll7_mean"))
         .fillna(0.0)
+        .drop("_date_int")
     )
 
     feature_cols = [

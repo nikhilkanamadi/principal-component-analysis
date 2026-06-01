@@ -76,8 +76,8 @@ def produce(
 ) -> int:
     try:
         producer = _build_producer()
-    except NoBrokersAvailable:
-        log.warning("Kafka unavailable — messages not published.")
+    except Exception as e:
+        log.warning("Kafka unavailable (%s) — messages not published.", e)
         return 0
 
     records = _fetch_chunk(latitude, longitude, start, end)
